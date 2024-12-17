@@ -10,10 +10,22 @@ const HeaderDepartamento = () => {
       </Link>
       <div className="flex justify-center gap-7">
         <Link
-          href="/dashboard"
+          href="#ger_projetos"
           className="relative w-fit block after:block after:content-[''] after:absolute after:h-[2px] after:bg-black after:w-full after:scale-x-0 after:hover:scale-x-100 after:transition after:duration-300 after:origin-center"
         >
           Projetos
+        </Link>
+        <Link
+          href="#ger_orientadores"
+          className="relative w-fit block after:block after:content-[''] after:absolute after:h-[2px] after:bg-black after:w-full after:scale-x-0 after:hover:scale-x-100 after:transition after:duration-300 after:origin-center"
+        >
+          Orientadores
+        </Link>
+        <Link
+          href="#ger_orientandos"
+          className="relative w-fit block after:block after:content-[''] after:absolute after:h-[2px] after:bg-black after:w-full after:scale-x-0 after:hover:scale-x-100 after:transition after:duration-300 after:origin-center"
+        >
+          Orientandos
         </Link>
       </div>
       <div className="flex justify-end">
