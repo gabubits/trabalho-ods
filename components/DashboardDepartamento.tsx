@@ -1,4 +1,5 @@
 import React from "react";
+import Forum from "./pag_forum/Forum";
 
 const DashboardDepartamento = () => {
   return (
@@ -24,6 +25,7 @@ const DashboardDepartamento = () => {
         </div>
         <div>Tabela de Orientandos</div>
       </div>
+      <div></div>
     </div>
   );
 };
