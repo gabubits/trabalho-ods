@@ -45,7 +45,7 @@ model UsuarioComum {
 
   orientador    Orientador?
   orientando    Orientando?
-  departamento  Departamento?
+  departamento  PessoaDepartamento?
   msgs_enviadas Mensagem[]
 }
 
@@ -66,8 +66,10 @@ model Orientando {
   ProjetosOrientando ProjetoOrientando[]
 }
 
-model Departamento {
+model PessoaDepartamento {
   numero_cpf String @id @unique
+  nome_dept  String
+  sigla_dept String
 
   UsuarioComum UsuarioComum @relation(fields: [numero_cpf], references: [numero_cpf])
 }
