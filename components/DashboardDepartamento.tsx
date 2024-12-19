@@ -36,7 +36,9 @@ const DashboardDepartamento = async () => {
   return (
     <div className="flex justify-center items-center flex-col my-6">
       <div className="">
-        <h1 className="font-bold text-4xl text-center">Gerenciamento de projetos</h1>
+        <h1 className="font-bold text-4xl text-center">
+          Gerenciamento de projetos
+        </h1>
         <div className="flex justify-center items-center mt-4 gap-4">
           <CriarProjetoDashboard />
           <ApagarProjetoDashboard />
