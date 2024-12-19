@@ -22,7 +22,7 @@ export async function criarPDeptAct(data: z.infer<typeof CriarPDeptSchema>) {
     };
   }
 
-  const novaPDept = await prisma.usuarioComum.create({
+  await prisma.usuarioComum.create({
     data: {
       numero_cpf: data.numero_cpf,
       nome: data.nome,
@@ -36,8 +36,6 @@ export async function criarPDeptAct(data: z.infer<typeof CriarPDeptSchema>) {
       },
     },
   });
-
-  console.log(novaPDept);
 
   return {
     success: true,
