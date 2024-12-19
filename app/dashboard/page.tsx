@@ -14,11 +14,12 @@ const Dashboard = async () => {
     },
     select: {
       tipo: true,
+      numero_cpf: true,
     },
   });
 
   if (usuarioLogado[0].tipo === TipoUsuario.DEPARTAMENTO) {
-    return <DashboardDepartamento />
+    return <DashboardDepartamento numero_cpf={usuarioLogado[0].numero_cpf}/>
   }
 
   if (usuarioLogado[0].tipo === TipoUsuario.ORIENTADOR) {

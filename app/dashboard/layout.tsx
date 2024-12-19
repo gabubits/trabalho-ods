@@ -16,13 +16,14 @@ export default async function RootLayout({
     },
     select: {
       tipo: true,
+      numero_cpf: true,
     },
   });
 
   if (usuarioLogado[0].tipo === TipoUsuario.DEPARTAMENTO) {
     return (
       <>
-        <HeaderDepartamento />
+        <HeaderDepartamento numero_cpf={usuarioLogado[0].numero_cpf} />
         {children}
       </>
     );

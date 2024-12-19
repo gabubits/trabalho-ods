@@ -5,7 +5,18 @@ import AtualizarProjetoDashboard from "./AtualizarProjetoDashboard";
 import { TPD, Projeto, columns } from "./TabelaProjetosDepartamento";
 import prisma from "@/prisma/db";
 
-const DashboardDepartamento = async () => {
+const DashboardDepartamento = async ({
+  numero_cpf,
+}: {
+  numero_cpf: string;
+}) => {
+  function isAdmin(numero_cpf: string): boolean {
+    if (numero_cpf === "99999999999") {
+      return true;
+    }
+    return false;
+  }
+
   const projetosDB = await prisma.projeto.findMany({
     select: {
       id: true,
@@ -35,8 +46,19 @@ const DashboardDepartamento = async () => {
 
   return (
     <div className="flex justify-center items-center flex-col my-6">
+      {isAdmin(numero_cpf) ? (
+        <div>
+          <h1 className="font-bold text-4xl">Gerenciamento de Pessoas do Departamento</h1>
+          <div className="flex justify-center items-center mt-4 gap-4">
+            Botões de gerenciamento
+          </div>
+          <div>Tabela de Orientadores</div>
+        </div>
+      ) : null}
       <div className="">
-        <h1 className="font-bold text-4xl text-center">Gerenciamento de projetos</h1>
+        <h1 className="font-bold text-4xl text-center">
+          Gerenciamento de projetos
+        </h1>
         <div className="flex justify-center items-center mt-4 gap-4">
           <CriarProjetoDashboard />
           <ApagarProjetoDashboard />
