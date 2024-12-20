@@ -15,3 +15,15 @@ export const CriarPDeptSchema = z.object({
     .string()
     .nonempty({ message: "Digite o nome do departamento." }),
 });
+
+export const AtualizarPDeptSchema = z.object({
+  numero_cpf: z
+    .string()
+    .trim()
+    .length(11, { message: "O CPF deve ter 11 números." }),
+  nome: z.string().nonempty({ message: "Digite o nome." }),
+  nome_dept: z.string().nonempty({ message: "Digite o nome do departamento." }),
+  sigla_dept: z
+    .string()
+    .nonempty({ message: "Digite o nome do departamento." }),
+});
