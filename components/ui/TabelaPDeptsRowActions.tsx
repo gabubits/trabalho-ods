@@ -38,6 +38,7 @@ interface DataTableRowActionsProps {
 export function DataTableRowActions({ row }: DataTableRowActionsProps) {
   const [deleteOpen, setDeleteOpen] = useState(false);
   const [editOpen, setEditOpen] = useState(false);
+  const [dropdownOpen, setDropdownOpen] = useState(false);
   const route = useRouter();
   const { toast } = useToast();
 
@@ -176,7 +177,7 @@ export function DataTableRowActions({ row }: DataTableRowActionsProps) {
         </DialogContent>
       </Dialog>
 
-      <DropdownMenu>
+      <DropdownMenu open={dropdownOpen} onOpenChange={(isOpen) => {setDropdownOpen(isOpen)}}>
         <DropdownMenuTrigger asChild>
           <Button variant="ghost" className="h-8 w-8 p-0">
             <MoreHorizontal className="h-4 w-4" />
@@ -187,6 +188,7 @@ export function DataTableRowActions({ row }: DataTableRowActionsProps) {
           <DropdownMenuItem
             onClick={() => {
               setDeleteOpen(true);
+              setDropdownOpen(false);
             }}
           >
             Apagar
@@ -194,6 +196,7 @@ export function DataTableRowActions({ row }: DataTableRowActionsProps) {
           <DropdownMenuItem
             onClick={() => {
               setEditOpen(true);
+              setDropdownOpen(false);
             }}
           >
             Alterar
