@@ -4,6 +4,8 @@ import ApagarProjetoDashboard from "./ApagarProjetoDashboard";
 import AtualizarProjetoDashboard from "./AtualizarProjetoDashboard";
 import { TPD, Projeto, columns } from "./TabelaProjetosDepartamento";
 import prisma from "@/prisma/db";
+import AtualizarPessoaDept from "./AtualizarPessoaDept";
+import Link from "next/link";
 
 const DashboardDepartamento = async ({
   numero_cpf,
@@ -48,9 +50,14 @@ const DashboardDepartamento = async ({
     <div className="flex justify-center items-center flex-col my-6">
       {isAdmin(numero_cpf) ? (
         <div>
-          <h1 className="font-bold text-4xl">Gerenciamento de Pessoas do Departamento</h1>
+          <h1 className="font-bold text-4xl">
+            Gerenciamento de Pessoas do Departamento
+          </h1>
           <div className="flex justify-center items-center mt-4 gap-4">
             Botões de gerenciamento
+            <div className="flex justify-center items-center mt-4 gap-4">
+              <AtualizarPessoaDept />
+            </div>
           </div>
           <div>Tabela de Orientadores</div>
         </div>

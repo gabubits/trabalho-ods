@@ -9,65 +9,37 @@ const prisma = new PrismaClient();
 
 async function main() {
 
-  const orientadorCpf = "12345678900";
-  const orientandoCpf = "98765432100";
+
+  const numeroCpf = "99999999999";
+  const nomeDept = "Departamento de Letras";
+  const siglaDept = "DE";
 
 
-  const nomeOrientando = "João da Silva";
-  const senhaOrientando = "senha123";
-  const cursoOrientando = "Engenharia de Software";
-
-
-  const topicoId = 1;
-  const conteudoMensagem = "Muito interessante essa discussão!";
-
-  const orientador = await prisma.orientador.findUnique({
-    where: { numero_cpf: orientadorCpf },
+  const usuarioExistente = await prisma.usuarioComum.findUnique({
+    where: { numero_cpf: numeroCpf },
   });
 
-  if (!orientador) {
-    console.error(`Orientador com CPF ${orientadorCpf} não encontrado.`);
+  if (usuarioExistente) {
+    console.error(`Usuário com CPF ${numeroCpf} já existe.`);
     return;
   }
 
-
-  const topico = await prisma.topico.findUnique({
-    where: { id: topicoId },
-  });
-
-  if (!topico) {
-    console.error(`Tópico com ID ${topicoId} não encontrado.`);
-    return;
-  }
-
-
-  const usuarioOrientando = await prisma.usuarioComum.create({
+  const novoDepartamento = await prisma.usuarioComum.create({
     data: {
-      numero_cpf: orientandoCpf,
-      nome: nomeOrientando,
-      senha: senhaOrientando,
-      tipo: "ORIENTANDO",
-      orientando: {
+      numero_cpf: numeroCpf,
+      nome: "Joice Cristina",
+      senha: "123456789",
+      tipo: "DEPARTAMENTO",
+      departamento: {
         create: {
-          curso: cursoOrientando,
+          nome_dept: nomeDept,
+          sigla_dept: siglaDept,
         },
       },
     },
   });
 
-  console.log("Usuário Orientando cadastrado:", usuarioOrientando);
-
-
-  const novaMensagem = await prisma.mensagem.create({
-    data: {
-      topico_id: topicoId,
-      conteudo: conteudoMensagem,
-      enviado_por_id: orientandoCpf,
-      data_enviado: new Date(),
-    },
-  });
-
-  console.log("Mensagem cadastrada com sucesso:", novaMensagem);
+  console.log("Pessoa do tipo Departamento cadastrada com sucesso:", novoDepartamento);
 }
 
 
