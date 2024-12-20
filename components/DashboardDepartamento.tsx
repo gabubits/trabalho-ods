@@ -4,8 +4,6 @@ import ApagarProjetoDashboard from "./ApagarProjetoDashboard";
 import AtualizarProjetoDashboard from "./AtualizarProjetoDashboard";
 import { TPD, Projeto, columns } from "./TabelaProjetosDepartamento";
 import prisma from "@/prisma/db";
-import AtualizarPessoaDept from "./AtualizarPessoaDept";
-import Link from "next/link";
 import CriarPDept from "./CriarPDept";
 import { PDeptTable, PDept, columnsPDept } from "./TabelaPDepts";
 import { TipoUsuario } from "@prisma/client";
@@ -85,9 +83,6 @@ const DashboardDepartamento = async ({
           </h1>
           <div className="flex justify-center items-center mt-4 gap-4">
             <CriarPDept />
-          </div>
-          <div className="flex justify-center items-center mt-4 gap-4">
-            <AtualizarPessoaDept />
           </div>
           <div className="h-[500px] w-[1000px] rounded-md bg-white overflow-x-auto p-5">
             <PDeptTable columns={columnsPDept} data={pDepts} />
