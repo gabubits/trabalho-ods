@@ -21,15 +21,8 @@ import {
   TableRow,
 } from "./ui/table";
 import { Button } from "./ui/button";
-import { ArrowLeft, ArrowRight, MoreHorizontal } from "lucide-react";
-import {
-  DropdownMenu,
-  DropdownMenuItem,
-  DropdownMenuLabel,
-  DropdownMenuTrigger,
-  DropdownMenuContent,
-} from "./ui/dropdown-menu";
-import { apagarPDeptAct } from "@/lib/actions/apagarPDept";
+import { ArrowLeft, ArrowRight } from "lucide-react";
+import { DataTableRowActions } from "./ui/TabelaPDeptsRowActions";
 
 export type PDept = {
   id: string;
@@ -45,27 +38,7 @@ export const columnsPDept: ColumnDef<PDept>[] = [
   { accessorKey: "sigla_dept", header: "Sigla do Dept." },
   {
     id: "actions",
-    cell: ({ row }) => {
-      return (
-        <DropdownMenu>
-          <DropdownMenuTrigger asChild>
-            <Button variant="ghost" className="h-8 w-8 p-0">
-              <MoreHorizontal className="h-4 w-4" />
-            </Button>
-          </DropdownMenuTrigger>
-          <DropdownMenuContent align="end">
-            <DropdownMenuLabel>Ações</DropdownMenuLabel>
-            <DropdownMenuItem
-              onClick={async () => {
-                await apagarPDeptAct(row.original.id);
-              }}
-            >
-              Apagar
-            </DropdownMenuItem>
-          </DropdownMenuContent>
-        </DropdownMenu>
-      );
-    },
+    cell: ({ row }) => <DataTableRowActions row={row} />,
   },
 ];
 

@@ -25,10 +25,14 @@ import { Input } from "./ui/input";
 import { CriarPDeptSchema } from "@/lib/actions/schemas";
 import { criarPDeptAct } from "@/lib/actions/criarPDept";
 import { X } from "lucide-react";
+import { useRouter } from "next/navigation";
+import { useToast } from "@/hooks/use-toast";
 
 const CriarPDept = () => {
   const [openDialog, setOpenDialog] = useState(false);
   const [state, setState] = useState({ message: "", success: true });
+  const route = useRouter();
+  const { toast } = useToast();
 
   const form = useForm<z.infer<typeof CriarPDeptSchema>>({
     resolver: zodResolver(CriarPDeptSchema),
@@ -45,7 +49,22 @@ const CriarPDept = () => {
     const { message, success } = await criarPDeptAct(values);
     if (success) {
       setOpenDialog(false);
+      route.refresh();
+      toast({
+        title: "Sucesso!",
+        description: message,
+        variant: "success",
+        duration: 3000,
+      });
+    } else {
+      toast({
+        title: "Erro!",
+        description: message,
+        variant: "destructive",
+        duration: 3000,
+      });
     }
+
     setState({ message, success });
   }
 
@@ -56,7 +75,7 @@ const CriarPDept = () => {
           Criar Pessoa do Dept.
         </Button>
       </DialogTrigger>
-      <DialogContent className="max-w-3xl">
+      <DialogContent className="max-w-3xl border-gree">
         <DialogHeader>
           <DialogTitle>Criar Pessoa do Dept.</DialogTitle>
         </DialogHeader>

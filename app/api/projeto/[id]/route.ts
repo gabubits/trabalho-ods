@@ -15,7 +15,7 @@ export async function GET(
     return NextResponse.json(todosOsProjetos);
   }
 
-  return NextResponse.json([])
+  return NextResponse.json([]);
 }
 
 export async function POST(
@@ -34,5 +34,5 @@ export async function POST(
     return NextResponse.json(criado);
   }
 
-  return NextResponse.json([])
+  return NextResponse.json([]);
 }

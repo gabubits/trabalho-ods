@@ -14,7 +14,7 @@ import {
   AlertDialogTrigger,
 } from "@/components/ui/modal-dialog";
 
-import { Button, buttonVariants } from "./ui/button";
+import { Button } from "./ui/button";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import {
@@ -59,6 +59,7 @@ export const CriarProjetoSchema = z.object({
 });
 
 const CriarProjetoDashboard = () => {
+
   const data_atual = new Date();
 
   const form = useForm<z.infer<typeof CriarProjetoSchema>>({
@@ -72,18 +73,8 @@ const CriarProjetoDashboard = () => {
     },
   });
 
-  function onSubmit(values: z.infer<typeof CriarProjetoSchema>) {
-    React.useEffect(() => {
-      fetch("/api/projeto/criar", {
-        method: "post",
-        headers: new Headers({ "Content-Type": "application/json" }),
-        body: JSON.stringify(values),
-      })
-        .then((res) => res.json())
-        .then((data) => {
-          console.log(data);
-        });
-    });
+  async function onSubmit(values: z.infer<typeof CriarProjetoSchema>) {
+    console.log(values);
   }
 
   const opcoesParaComboBox = [
@@ -113,12 +104,7 @@ const CriarProjetoDashboard = () => {
         <AlertDialogContent className="max-w-3xl">
           <AlertDialogHeader>
             <AlertDialogTitle>Criar projeto</AlertDialogTitle>
-            <form
-              onSubmit={form.handleSubmit(onSubmit, (e) => {
-                console.log(e);
-              })}
-              className="space-y-4"
-            >
+            <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
               <div className="grid grid-cols-2 gap-x-6">
                 <div className="flex flex-col justify-start gap-5">
                   <FormField
@@ -362,9 +348,7 @@ const CriarProjetoDashboard = () => {
                   />
                 </div>
               </div>
-              <Button type="submit">
-                  Criar
-              </Button>
+              <Button type="submit">Criar</Button>
               <AlertDialogCancel>Cancelar</AlertDialogCancel>
             </form>
           </AlertDialogHeader>
