@@ -74,6 +74,16 @@ const DashboardDepartamento = async ({
     });
   }
 
+  const orientadores = await prisma.usuarioComum.findMany({
+    where: {
+      tipo: TipoUsuario.ORIENTADOR,
+    },
+    select: {
+      numero_cpf: true,
+      nome: true,
+    },
+  });
+
   return (
     <div className="flex justify-center items-center flex-col my-6">
       {isAdmin(numero_cpf) ? (
@@ -94,7 +104,7 @@ const DashboardDepartamento = async ({
           Gerenciamento de projetos
         </h1>
         <div className="flex justify-center items-center mt-4 gap-4">
-          <CriarProjetoDashboard />
+          <CriarProjetoDashboard orientadores={orientadores}/>
           <ApagarProjetoDashboard />
           <AtualizarProjetoDashboard />
         </div>

@@ -40,26 +40,13 @@ import {
 import { format } from "date-fns/format";
 import { Calendar } from "./ui/calendar";
 import { Textarea } from "./ui/textarea";
+import { CriarProjetoSchema } from "@/lib/actions/schemas";
 
-export const CriarProjetoSchema = z.object({
-  nome: z
-    .string({
-      required_error: "Digite o nome do projeto.",
-    })
-    .min(1, { message: "Digite o nome do projeto." }),
-  tipo: z.nativeEnum(TipoProjeto, {
-    required_error: "Selecione o tipo de projeto.",
-  }),
-  data_inicio: z.date({ required_error: "Informe a data de início." }),
-  data_termino: z.date({ required_error: "Informe a data de término" }),
-  descricao: z.string().trim(),
-  orientador_cpf: z.string({
-    required_error: "Selecione o orientador do projeto.",
-  }),
-});
-
-const CriarProjetoDashboard = () => {
-
+const CriarProjetoDashboard = ({
+  orientadores,
+}: {
+  orientadores: { numero_cpf: string; nome: string }[];
+}) => {
   const data_atual = new Date();
 
   const form = useForm<z.infer<typeof CriarProjetoSchema>>({
@@ -82,18 +69,6 @@ const CriarProjetoDashboard = () => {
     { value: TipoProjeto.IC, label: "Iniciação Científica" },
     { value: TipoProjeto.TCC, label: "TCC" },
   ];
-
-  const [dadosOrientadores, setDadosOrientadores] = React.useState<
-    { numero_cpf: string; nome: string }[]
-  >([]);
-
-  React.useEffect(() => {
-    fetch("/api/orientadores")
-      .then((res) => res.json())
-      .then((data) => {
-        setDadosOrientadores(data);
-      });
-  }, []);
 
   return (
     <Form {...form}>
@@ -202,7 +177,7 @@ const CriarProjetoDashboard = () => {
                                 )}
                               >
                                 {field.value
-                                  ? dadosOrientadores.find(
+                                  ? orientadores.find(
                                       (op) => op.numero_cpf === field.value
                                     )?.nome
                                   : "Selecione o orientador"}
@@ -219,7 +194,7 @@ const CriarProjetoDashboard = () => {
                               <CommandList>
                                 <CommandEmpty>Não encontrado</CommandEmpty>
                                 <CommandGroup>
-                                  {dadosOrientadores.map((language) => (
+                                  {orientadores.map((language) => (
                                     <CommandItem
                                       value={language.nome}
                                       key={language.numero_cpf}
