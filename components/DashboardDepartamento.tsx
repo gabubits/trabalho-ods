@@ -6,6 +6,9 @@ import { TPD, Projeto, columns } from "./TabelaProjetosDepartamento";
 import prisma from "@/prisma/db";
 import AtualizarPessoaDept from "./AtualizarPessoaDept";
 import Link from "next/link";
+import CriarPDept from "./CriarPDept";
+import { PDeptTable, PDept, columnsPDept } from "./TabelaPDepts";
+import { TipoUsuario } from "@prisma/client";
 
 const DashboardDepartamento = async ({
   numero_cpf,
@@ -46,20 +49,49 @@ const DashboardDepartamento = async ({
     });
   }
 
+  const pDeptDB = await prisma.usuarioComum.findMany({
+    where: {
+      NOT: {
+        numero_cpf: "99999999999",
+      },
+      tipo: TipoUsuario.DEPARTAMENTO,
+    },
+    include: {
+      departamento: true,
+    },
+  });
+
+  const pDepts: PDept[] = [];
+
+  for (const pDept of pDeptDB) {
+    pDepts.push({
+      id: pDept.numero_cpf,
+      nome: pDept.nome,
+      nome_dept: pDept.departamento
+        ? pDept.departamento.nome_dept
+        : "Sem departamento",
+      sigla_dept: pDept.departamento
+        ? pDept.departamento.sigla_dept
+        : "Sem sigla",
+    });
+  }
+
   return (
     <div className="flex justify-center items-center flex-col my-6">
       {isAdmin(numero_cpf) ? (
         <div>
-          <h1 className="font-bold text-4xl">
+          <h1 className="font-bold text-4xl text-center">
             Gerenciamento de Pessoas do Departamento
           </h1>
           <div className="flex justify-center items-center mt-4 gap-4">
-            Botões de gerenciamento
-            <div className="flex justify-center items-center mt-4 gap-4">
-              <AtualizarPessoaDept />
-            </div>
+            <CriarPDept />
           </div>
-          <div>Tabela de Orientadores</div>
+          <div className="flex justify-center items-center mt-4 gap-4">
+            <AtualizarPessoaDept />
+          </div>
+          <div className="h-[500px] w-[1000px] rounded-md bg-white overflow-x-auto p-5">
+            <PDeptTable columns={columnsPDept} data={pDepts} />
+          </div>
         </div>
       ) : null}
       <div className="">
