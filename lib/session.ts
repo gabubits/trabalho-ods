@@ -4,7 +4,8 @@ import { SignJWT, jwtVerify } from "jose";
 import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
 
-const key = new TextEncoder().encode('encrypt_ods');
+const secret = process.env.SESSION_SECRET;
+const key = new TextEncoder().encode(secret);
 
 export async function encrypt(payload: any) {
   return new SignJWT(payload)
@@ -18,7 +19,7 @@ export async function decrypt(session: string | undefined = "") {
   try {
     const { payload } = await jwtVerify(session, key);
     return payload;
-  } catch (error) {
+  } catch (e) {
     return null;
   }
 }
