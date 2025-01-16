@@ -14,15 +14,14 @@ datasource db {
 }
 
 enum SituacaoSolicitacao {
-  deferido
-  indeferido
-  em_andamento
+  DEFERIDO
+  INDEFERIDO
+  EM_ANDAMENTO
 }
 
 enum TipoUsuario {
-  ORIENTADOR
   ORIENTANDO
-  DEPARTAMENTO
+  PESSOADEPARTAMENTO
 }
 
 enum StatusProjeto {
@@ -80,7 +79,7 @@ model Projeto {
   banca_data     DateTime?
   status         StatusProjeto?
 
-  PessoaDepartamento PessoaDepartamento     @relation(fields: [orientador_cpf], references: [numero_cpf])
+  Orientador         PessoaDepartamento     @relation(fields: [orientador_cpf], references: [numero_cpf])
   ProjetosOrientando ProjetoOrientando[]
   Topicos            Topico[]
   BancaAvaliadora    BancaAvaliadora[]
