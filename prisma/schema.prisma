@@ -43,19 +43,9 @@ model UsuarioComum {
   senha      String
   tipo       TipoUsuario
 
-  orientador    Orientador?
+  orientador    PessoaDepartamento?
   orientando    Orientando?
-  departamento  PessoaDepartamento?
   msgs_enviadas Mensagem[]
-}
-
-model Orientador {
-  numero_cpf        String  @id @unique
-  departamento      String
-  descricao_pessoal String?
-
-  usuarioComum UsuarioComum @relation(fields: [numero_cpf], references: [numero_cpf])
-  projetos     Projeto[]
 }
 
 model Orientando {
@@ -67,11 +57,14 @@ model Orientando {
 }
 
 model PessoaDepartamento {
-  numero_cpf String @id @unique
-  nome_dept  String
-  sigla_dept String
+  numero_cpf        String  @id @unique
+  sigla_dept        String
+  nome              String
+  eh_admin          Boolean
+  descricao_pessoal String?
 
   UsuarioComum UsuarioComum @relation(fields: [numero_cpf], references: [numero_cpf])
+  projetos     Projeto[]
 }
 
 model Projeto {
@@ -87,7 +80,7 @@ model Projeto {
   banca_data     DateTime?
   status         StatusProjeto?
 
-  Orientador         Orientador             @relation(fields: [orientador_cpf], references: [numero_cpf])
+  PessoaDepartamento PessoaDepartamento     @relation(fields: [orientador_cpf], references: [numero_cpf])
   ProjetosOrientando ProjetoOrientando[]
   Topicos            Topico[]
   BancaAvaliadora    BancaAvaliadora[]
