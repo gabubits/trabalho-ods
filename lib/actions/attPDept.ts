@@ -5,29 +5,42 @@ import { z } from "zod";
 import prisma from "@/prisma/db";
 
 export async function attPDeptAct(data: z.infer<typeof AtualizarPDeptSchema>) {
-  const PDeptAlterado = await prisma.usuarioComum.update({
+  const deptExiste = await prisma.departamento.findMany({
+    where: {
+      sigla_dept: data.sigla_dept,
+    },
+  });
+
+  if (deptExiste.length === 0) {
+    return {
+      success: false,
+      message: `${data.sigla_dept} não existe!`,
+    };
+  }
+
+  const usuarioAlterado = await prisma.usuarioComum.update({
     where: {
       numero_cpf: data.numero_cpf,
     },
     data: {
       nome: data.nome,
-      departamento: {
-        update: {
-          data: {
-            nome_dept: data.nome_dept,
-            sigla_dept: data.sigla_dept,
-          },
-        },
-      },
+      tipo: data.tipo_pessoa,
     },
   });
 
-  console.log(PDeptAlterado);
+  const pDeptAlterado = await prisma.pessoaDepartamento.update({
+    where: {
+      numero_cpf: data.numero_cpf,
+    },
+    data: {
+      sigla_dept: data.sigla_dept,
+    },
+  });
 
-  if (PDeptAlterado) {
+  if (pDeptAlterado) {
     return {
       success: true,
-      message: `${PDeptAlterado.nome} (${PDeptAlterado.numero_cpf}) alterado com sucesso!`,
+      message: `${usuarioAlterado.nome} (${pDeptAlterado.numero_cpf}) alterado com sucesso!`,
     };
   }
 

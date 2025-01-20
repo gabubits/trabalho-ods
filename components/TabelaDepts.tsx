@@ -22,36 +22,31 @@ import {
 } from "./ui/table";
 import { Button } from "./ui/button";
 import { ArrowLeft, ArrowRight } from "lucide-react";
-import { DataTableRowActions } from "./ui/TabelaPDeptsRowActions";
-import { TipoUsuario } from "@prisma/client";
+import { DataTableRowActions } from "./ui/TabelaDeptsRowActions";
 
-export type PDept = {
-  numero_cpf: string;
-  nome: string;
+export type Dept = {
   sigla_dept: string;
-  tipo: TipoUsuario;
+  nome: string;
 };
 
-export const columnsPDept: ColumnDef<PDept>[] = [
-  { accessorKey: "numero_cpf", header: "CPF" },
-  { accessorKey: "nome", header: "Nome" },
+export const columnsDept: ColumnDef<Dept>[] = [
+  { accessorKey: "nome", header: "Nome do Dept." },
   { accessorKey: "sigla_dept", header: "Sigla do Dept." },
-  { accessorKey: "tipo", header: "Tipo de pessoa" },
   {
     id: "actions",
     cell: ({ row }) => <DataTableRowActions row={row} />,
   },
 ];
 
-interface PDeptProps<TData, TValue> {
+interface DeptProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];
   data: TData[];
 }
 
-export function PDeptTable<TData, TValue>({
+export function DeptTable<TData, TValue>({
   columns,
   data,
-}: PDeptProps<TData, TValue>) {
+}: DeptProps<TData, TValue>) {
   const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>(
     []
   );
@@ -78,7 +73,7 @@ export function PDeptTable<TData, TValue>({
     <div>
       <div className="flex justify-center items-center py-4">
         <Input
-          placeholder="Filtrar pessoas..."
+          placeholder="Filtrar departamentos..."
           value={(table.getColumn("nome")?.getFilterValue() as string) ?? ""}
           onChange={(event) =>
             table.getColumn("nome")?.setFilterValue(event.target.value)

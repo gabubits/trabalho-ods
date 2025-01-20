@@ -1,4 +1,4 @@
-import { TipoProjeto } from "@prisma/client";
+import { TipoProjeto, TipoUsuario } from "@prisma/client";
 import { z } from "zod";
 
 export const CriarPDeptSchema = z.object({
@@ -12,10 +12,8 @@ export const CriarPDeptSchema = z.object({
     .string()
     .trim()
     .min(8, { message: "A senha deve ter no mínimo 8 caracteres." }),
-  nome_dept: z.string().nonempty({ message: "Digite o nome do departamento." }),
-  sigla_dept: z
-    .string()
-    .nonempty({ message: "Digite o nome do departamento." }),
+  sigla_dept: z.string().nonempty({ message: "Selecione um departamento" }),
+  tipo_pessoa: z.nativeEnum(TipoUsuario),
 });
 
 export const AtualizarPDeptSchema = z.object({
@@ -24,10 +22,23 @@ export const AtualizarPDeptSchema = z.object({
     .trim()
     .length(11, { message: "O CPF deve ter 11 números." }),
   nome: z.string().nonempty({ message: "Digite o nome." }),
-  nome_dept: z.string().nonempty({ message: "Digite o nome do departamento." }),
+  sigla_dept: z.string().nonempty({ message: "Selecione um departamento." }),
+  tipo_pessoa: z.nativeEnum(TipoUsuario),
+});
+
+export const CriarDeptSchema = z.object({
   sigla_dept: z
     .string()
-    .nonempty({ message: "Digite o nome do departamento." }),
+    .nonempty({ message: "Digite a sigla do departamento." }),
+  nome: z.string().nonempty({ message: "Digite o nome do departamento." }),
+});
+
+export const AtualizarDeptSchema = z.object({
+  sigla_dept_nova: z
+    .string()
+    .nonempty({ message: "Digite a sigla do departamento." }),
+  sigla_dept_antiga: z.string(),
+  nome: z.string().nonempty({ message: "Digite o nome do departamento." }),
 });
 
 export const CriarProjetoSchema = z.object({

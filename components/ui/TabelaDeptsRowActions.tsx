@@ -10,14 +10,12 @@ import {
 } from "./dropdown-menu";
 import { MoreHorizontal } from "lucide-react";
 import { Button } from "./button";
-import { apagarPDeptAct } from "@/lib/actions/apagarPDept";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "./dialog";
-import { PDept } from "../TabelaPDepts";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
-import { AtualizarPDeptSchema } from "@/lib/actions/schemas";
+import { AtualizarDeptSchema } from "@/lib/actions/schemas";
 import {
   Form,
   FormControl,
@@ -27,20 +25,14 @@ import {
   FormMessage,
 } from "./form";
 import { Input } from "./input";
-import { attPDeptAct } from "@/lib/actions/attPDept";
 import { useRouter } from "next/navigation";
 import { useToast } from "@/hooks/use-toast";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "./select";
-import { TipoUsuario } from "@prisma/client";
+import { Dept } from "../TabelaDepts";
+import { attDeptAct } from "@/lib/actions/attDept";
+import { apagarDeptAct } from "@/lib/actions/apagarDept";
 
 interface DataTableRowActionsProps {
-  row: Row<PDept>;
+  row: Row<Dept>;
 }
 
 export function DataTableRowActions({ row }: DataTableRowActionsProps) {
@@ -50,18 +42,17 @@ export function DataTableRowActions({ row }: DataTableRowActionsProps) {
   const route = useRouter();
   const { toast } = useToast();
 
-  const form = useForm<z.infer<typeof AtualizarPDeptSchema>>({
-    resolver: zodResolver(AtualizarPDeptSchema),
+  const form = useForm<z.infer<typeof AtualizarDeptSchema>>({
+    resolver: zodResolver(AtualizarDeptSchema),
     defaultValues: {
-      numero_cpf: row.original.numero_cpf,
       nome: row.original.nome,
-      sigla_dept: row.original.sigla_dept,
-      tipo_pessoa: row.original.tipo,
+      sigla_dept_antiga: row.original.sigla_dept,
+      sigla_dept_nova: "",
     },
   });
 
-  async function onSubmit(values: z.infer<typeof AtualizarPDeptSchema>) {
-    const { message, success } = await attPDeptAct(values);
+  async function onSubmit(values: z.infer<typeof AtualizarDeptSchema>) {
+    const { message, success } = await attDeptAct(values);
     if (success) {
       setEditOpen(false);
       route.refresh();
@@ -91,7 +82,7 @@ export function DataTableRowActions({ row }: DataTableRowActionsProps) {
           <Button
             variant="destructive"
             onClick={async () => {
-              await apagarPDeptAct(row.original.numero_cpf);
+              await apagarDeptAct(row.original.sigla_dept);
               setDeleteOpen(false);
               route.refresh();
               toast({
@@ -111,7 +102,7 @@ export function DataTableRowActions({ row }: DataTableRowActionsProps) {
         <DialogContent className="max-w-3xl">
           <DialogHeader>
             <DialogTitle>
-              Atualizar {row.original.nome} ({row.original.numero_cpf})
+              Atualizar {row.original.nome} ({row.original.sigla_dept})
             </DialogTitle>
           </DialogHeader>
           <Form {...form}>
@@ -119,10 +110,12 @@ export function DataTableRowActions({ row }: DataTableRowActionsProps) {
               <div className="flex flex-col justify-start gap-5">
                 <FormField
                   control={form.control}
-                  name="numero_cpf"
+                  name="sigla_dept_antiga"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel className="font-bold">CPF</FormLabel>
+                      <FormLabel className="font-bold">
+                        Sigla antiga do Dept.
+                      </FormLabel>
                       <FormControl>
                         <Input disabled {...field} />
                       </FormControl>
@@ -136,7 +129,7 @@ export function DataTableRowActions({ row }: DataTableRowActionsProps) {
                   name="nome"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel className="font-bold">Nome</FormLabel>
+                      <FormLabel className="font-bold">Nome do Dept.</FormLabel>
                       <FormControl>
                         <Input {...field} />
                       </FormControl>
@@ -147,46 +140,15 @@ export function DataTableRowActions({ row }: DataTableRowActionsProps) {
 
                 <FormField
                   control={form.control}
-                  name="sigla_dept"
+                  name="sigla_dept_nova"
                   render={({ field }) => (
                     <FormItem>
                       <FormLabel className="font-bold">
-                        Sigla do Dept.
+                        Sigla nova do Dept.
                       </FormLabel>
                       <FormControl>
                         <Input {...field} />
                       </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-
-                <FormField
-                  control={form.control}
-                  name="tipo_pessoa"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel className="font-bold">
-                        Tipo de pessoa
-                      </FormLabel>
-                      <Select
-                        onValueChange={field.onChange}
-                        defaultValue={field.value}
-                      >
-                        <FormControl>
-                          <SelectTrigger>
-                            <SelectValue placeholder="Selecione um tipo de pessoa" />
-                          </SelectTrigger>
-                        </FormControl>
-                        <SelectContent>
-                          <SelectItem value={TipoUsuario.ADM_DEPT}>
-                            {TipoUsuario.ADM_DEPT}
-                          </SelectItem>
-                          <SelectItem value={TipoUsuario.ORIENTADOR}>
-                            {TipoUsuario.ORIENTADOR}
-                          </SelectItem>
-                        </SelectContent>
-                      </Select>
                       <FormMessage />
                     </FormItem>
                   )}

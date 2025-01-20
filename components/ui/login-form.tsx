@@ -11,8 +11,8 @@ import {
 } from "@/components/ui/modal-dialog";
 
 import { useActionState } from "react";
-import { login } from "./actions";
 import { Button } from "./button";
+import { login } from "@/lib/actions/login";
 
 const LoginForm = () => {
   const [state, loginAction, pending] = useActionState(login, undefined);
@@ -77,7 +77,7 @@ const LoginForm = () => {
                 </div>
               </div>
               <Button disabled={pending} type="submit">
-                {pending ? 'Entrando...' : 'Entrar'}
+                {pending ? "Entrando..." : "Entrar"}
               </Button>
               <AlertDialogCancel>Cancelar</AlertDialogCancel>
             </form>

@@ -5,7 +5,7 @@ export async function middleware(req: NextRequest) {
   const cookie = req.cookies.get("session")?.value;
   const session = await decrypt(cookie);
 
-  if (!session?.userId) {
+  if (!session?.usuario_cpf) {
     return NextResponse.redirect(new URL("/", req.nextUrl));
   }
 

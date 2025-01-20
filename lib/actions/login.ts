@@ -54,7 +54,7 @@ export async function login(prevState: any, formData: FormData) {
     };
   }
 
-  await createSession(usuario[0].numero_cpf);
+  await createSession(usuario[0].numero_cpf, usuario[0].tipo);
 }
 
 export async function logout() {

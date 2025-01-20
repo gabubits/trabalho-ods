@@ -2,8 +2,8 @@
 
 import React from "react";
 import { Button } from "./button";
-import { logout } from "./actions";
 import { LogOut } from "lucide-react";
+import { logout } from "@/lib/actions/login";
 
 const BotaoSair = () => {
   return (

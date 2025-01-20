@@ -21,7 +21,9 @@ enum SituacaoSolicitacao {
 
 enum TipoUsuario {
   ORIENTANDO
-  PESSOADEPARTAMENTO
+  ORIENTADOR
+  ADM_DEPT
+  ADM_GERAL
 }
 
 enum StatusProjeto {
@@ -55,14 +57,20 @@ model Orientando {
   ProjetosOrientando ProjetoOrientando[]
 }
 
+model Departamento {
+  sigla_dept String @id @unique
+  nome String
+
+  pessoas PessoaDepartamento[]
+}
+
 model PessoaDepartamento {
   numero_cpf        String  @id @unique
   sigla_dept        String
-  nome              String
-  eh_admin          Boolean
   descricao_pessoal String?
 
   UsuarioComum UsuarioComum @relation(fields: [numero_cpf], references: [numero_cpf])
+  Departamento Departamento @relation(fields: [sigla_dept], references: [sigla_dept])
   projetos     Projeto[]
 }
 

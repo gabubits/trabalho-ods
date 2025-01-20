@@ -1,7 +1,6 @@
 import Link from "next/link";
 import React from "react";
-import { Button } from "../ui/button";
-import LoginForm from "../ui/login-form";
+import LoginForm from "./ui/login-form";
 
 const Header = () => {
   return (

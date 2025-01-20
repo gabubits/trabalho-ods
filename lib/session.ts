@@ -23,10 +23,9 @@ export async function encrypt(payload: SessionPayload) {
 
 export async function decrypt(session: string | undefined = "") {
   try {
-    const { payload } = await jwtVerify(session, key);
+    const { payload } = await jwtVerify<SessionPayload>(session, key);
     return payload;
   } catch (e) {
-    console.error(e);
     return null;
   }
 }
@@ -50,12 +49,11 @@ export async function verifySession() {
   const cookie = (await cookies()).get("session")?.value;
   const session = await decrypt(cookie);
 
-  if (!session || !cookie) {
+  if (!session?.usuario_cpf) {
     redirect("/");
   }
 
   return {
-    isAuth: true,
     usuario_cpf: session.usuario_cpf,
     usuario_tipo: session.usuario_tipo,
   };

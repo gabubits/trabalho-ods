@@ -23,13 +23,11 @@ import {
 
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { ArrowLeft, ArrowRight, ArrowRightFromLine} from "lucide-react";
-
+import { ArrowLeft, ArrowRight } from "lucide-react";
 import { TipoProjeto } from "@prisma/client";
-import Link from "next/link";
 
 export type Projeto = {
-  id: number;
+  id_proj: number;
   nome_proj: string;
   tipo_proj: TipoProjeto;
   orientador_nome: string;
@@ -48,26 +46,17 @@ export const columns: ColumnDef<Projeto>[] = [
     accessorKey: "orientador_nome",
     header: "Orientador",
   },
-  {
-    id: "actions",
-    cell: ({ row }) => {
-      return (
-        <Link href={`/dashboard/${row.original.id}`}>
-          <Button variant="ghost" className="h-8 w-8 p-0">
-            <ArrowRightFromLine className="h-4 w-4" />
-          </Button>
-        </Link>
-      );
-    },
-  },
 ];
 
-interface TPDProps<TData, TValue> {
+interface TabelaUsuarioProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];
   data: TData[];
 }
 
-export function TPD<TData, TValue>({ columns, data }: TPDProps<TData, TValue>) {
+export function TabelaProjetosHome<TData, TValue>({
+  columns,
+  data,
+}: TabelaUsuarioProps<TData, TValue>) {
   const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>(
     []
   );
@@ -86,7 +75,7 @@ export function TPD<TData, TValue>({ columns, data }: TPDProps<TData, TValue>) {
 
   return (
     <div>
-      <div className="flex justify-center items-center py-4">
+      <div className="flex items-center py-4">
         <Input
           placeholder="Filtrar projetos..."
           value={
