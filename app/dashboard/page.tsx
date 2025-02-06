@@ -1,33 +1,28 @@
 import { verifySession } from "@/lib/session";
-import prisma from "@/prisma/db";
 import React from "react";
 import { TipoUsuario } from "@prisma/client";
-import DashboardDepartamento from "@/components/DashboardDepartamento";
+import DashboardAdmDept from "@/components/DashboardAdmDept";
+import DashboardAdmGeral from "@/components/DashboardAdmGeral";
 import DashboardOrientador from "@/components/DashboardOrientador";
+import DashboardOrientando from "@/components/DashboardOrientando";
 
 const Dashboard = async () => {
   const session = await verifySession();
 
-  const usuarioLogado = await prisma.usuarioComum.findMany({
-    where: {
-      numero_cpf: session?.userId,
-    },
-    select: {
-      tipo: true,
-      numero_cpf: true,
-    },
-  });
-
-  if (usuarioLogado[0].tipo === TipoUsuario.DEPARTAMENTO) {
-    return <DashboardDepartamento numero_cpf={usuarioLogado[0].numero_cpf}/>
+  if (session.usuario_tipo === TipoUsuario.ADM_GERAL) {
+    return <DashboardAdmGeral />;
   }
 
-  if (usuarioLogado[0].tipo === TipoUsuario.ORIENTADOR) {
-    return <DashboardOrientador />
+  if (session.usuario_tipo === TipoUsuario.ADM_DEPT) {
+    return <DashboardAdmDept />;
   }
 
-  if (usuarioLogado[0].tipo === TipoUsuario.ORIENTANDO) {
-    return <DashboardOrientador />
+  if (session.usuario_tipo === TipoUsuario.ORIENTADOR) {
+    return <DashboardOrientador />;
+  }
+
+  if (session.usuario_tipo === TipoUsuario.ORIENTANDO) {
+    return <DashboardOrientando />;
   }
 };
 

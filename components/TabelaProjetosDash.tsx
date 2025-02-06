@@ -23,17 +23,54 @@ import {
 
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { ArrowLeft, ArrowRight } from 'lucide-react';
+import { ArrowLeft, ArrowRight, ArrowRightFromLine } from "lucide-react";
 
-interface TabelaUsuarioProps<TData, TValue> {
+import { TipoProjeto } from "@prisma/client";
+import Link from "next/link";
+
+export type Projeto = {
+  id: number;
+  nome_proj: string;
+  tipo_proj: TipoProjeto;
+  orientador_nome: string;
+};
+
+export const columns: ColumnDef<Projeto>[] = [
+  {
+    accessorKey: "nome_proj",
+    header: "Nome do projeto",
+  },
+  {
+    accessorKey: "tipo_proj",
+    header: "Tipo de projeto",
+  },
+  {
+    accessorKey: "orientador_nome",
+    header: "Orientador",
+  },
+  {
+    id: "actions",
+    cell: ({ row }) => {
+      return (
+        <Link href={`/dashboard/${row.original.id}`}>
+          <Button variant="ghost" className="h-8 w-8 p-0">
+            <ArrowRightFromLine className="h-4 w-4" />
+          </Button>
+        </Link>
+      );
+    },
+  },
+];
+
+interface TPDProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];
   data: TData[];
 }
 
-export function TabelaUsuario<TData, TValue>({
+export function TabelaProjetosDash<TData, TValue>({
   columns,
   data,
-}: TabelaUsuarioProps<TData, TValue>) {
+}: TPDProps<TData, TValue>) {
   const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>(
     []
   );
@@ -52,10 +89,12 @@ export function TabelaUsuario<TData, TValue>({
 
   return (
     <div>
-      <div className="flex items-center py-4">
+      <div className="flex justify-center items-center py-4">
         <Input
           placeholder="Filtrar projetos..."
-          value={(table.getColumn("nome_proj")?.getFilterValue() as string) ?? ""}
+          value={
+            (table.getColumn("nome_proj")?.getFilterValue() as string) ?? ""
+          }
           onChange={(event) =>
             table.getColumn("nome_proj")?.setFilterValue(event.target.value)
           }

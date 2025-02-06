@@ -1,31 +1,14 @@
-import HeaderDepartamento from "@/components/HeaderDepartamento";
-import { verifySession } from "@/lib/session";
-import prisma from "@/prisma/db";
-import { TipoUsuario } from "@prisma/client";
+import HeaderDashboard from "@/components/HeaderDashboard";
 
-export default async function RootLayout({
+export default function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  const session = await verifySession();
-
-  const usuarioLogado = await prisma.usuarioComum.findMany({
-    where: {
-      numero_cpf: session?.userId,
-    },
-    select: {
-      tipo: true,
-      numero_cpf: true,
-    },
-  });
-
-  if (usuarioLogado[0].tipo === TipoUsuario.DEPARTAMENTO) {
-    return (
-      <>
-        <HeaderDepartamento numero_cpf={usuarioLogado[0].numero_cpf} />
-        {children}
-      </>
-    );
-  }
+  return (
+    <>
+      <HeaderDashboard />
+      {children}
+    </>
+  );
 }

@@ -2,7 +2,6 @@
 import { CriarPDeptSchema } from "./schemas";
 import { z } from "zod";
 import prisma from "@/prisma/db";
-import { TipoUsuario } from "@prisma/client";
 
 export type FormState = {
   message: string;
@@ -27,10 +26,9 @@ export async function criarPDeptAct(data: z.infer<typeof CriarPDeptSchema>) {
       numero_cpf: data.numero_cpf,
       nome: data.nome,
       senha: data.senha,
-      tipo: TipoUsuario.DEPARTAMENTO,
-      departamento: {
+      tipo: data.tipo_pessoa,
+      orientador: {
         create: {
-          nome_dept: data.nome_dept,
           sigla_dept: data.sigla_dept,
         },
       },

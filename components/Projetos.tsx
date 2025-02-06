@@ -1,7 +1,6 @@
 import React from "react";
-import { Projeto, columns } from "../ui/tabela-usuario/columns";
-import { TabelaUsuario } from "../ui/tabela-usuario/tabela-usuario";
 import prisma from "@/prisma/db";
+import { columns, Projeto, TabelaProjetosHome } from "./TabelaProjetosHome";
 
 const Projetos = async () => {
   const projetosDB = await prisma.projeto.findMany({
@@ -11,7 +10,7 @@ const Projetos = async () => {
       tipo: true,
       Orientador: {
         select: {
-          usuarioComum: {
+          UsuarioComum: {
             select: {
               nome: true,
             },
@@ -27,7 +26,7 @@ const Projetos = async () => {
       id_proj: proj.id,
       nome_proj: proj.nome,
       tipo_proj: proj.tipo,
-      orientador_nome: proj.Orientador.usuarioComum.nome,
+      orientador_nome: proj.Orientador.UsuarioComum.nome,
     });
   }
 
@@ -41,7 +40,7 @@ const Projetos = async () => {
       </h1>
       <div className="my-10 flex justify-center">
         <div className=" h-[500px] w-[1000px] rounded-md bg-white overflow-x-auto p-5">
-          <TabelaUsuario columns={columns} data={projetos} />
+          <TabelaProjetosHome columns={columns} data={projetos} />
         </div>
       </div>
     </div>

@@ -1,6 +1,6 @@
-import Header from "@/components/pag_inicial/Header";
-import Inicio from "@/components/pag_inicial/Inicio";
-import Projetos from "@/components/pag_inicial/Projetos";
+import Header from "@/components/Header";
+import Inicio from "@/components/Inicio";
+import Projetos from "@/components/Projetos";
 
 export default function Home() {
   return (

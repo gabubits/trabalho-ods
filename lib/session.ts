@@ -7,7 +7,13 @@ import { redirect } from "next/navigation";
 const secret = process.env.SESSION_SECRET;
 const key = new TextEncoder().encode(secret);
 
-export async function encrypt(payload: any) {
+type SessionPayload = {
+  usuario_cpf: string;
+  usuario_tipo: string;
+  expiresAt: Date;
+};
+
+export async function encrypt(payload: SessionPayload) {
   return new SignJWT(payload)
     .setProtectedHeader({ alg: "HS256" })
     .setIssuedAt()
@@ -17,16 +23,16 @@ export async function encrypt(payload: any) {
 
 export async function decrypt(session: string | undefined = "") {
   try {
-    const { payload } = await jwtVerify(session, key);
+    const { payload } = await jwtVerify<SessionPayload>(session, key);
     return payload;
   } catch (e) {
     return null;
   }
 }
 
-export async function createSession(userId: string) {
+export async function createSession(usuario_cpf: string, usuario_tipo: string) {
   const expiresAt = new Date(Date.now() + 60 * 60 * 1000);
-  const session = await encrypt({ userId, expiresAt });
+  const session = await encrypt({ usuario_cpf, usuario_tipo, expiresAt });
 
   (await cookies()).set("session", session, {
     httpOnly: true,
@@ -43,11 +49,14 @@ export async function verifySession() {
   const cookie = (await cookies()).get("session")?.value;
   const session = await decrypt(cookie);
 
-  if (!session?.userId) {
+  if (!session?.usuario_cpf) {
     redirect("/");
   }
 
-  return { isAuth: true, userId: session.userId };
+  return {
+    usuario_cpf: session.usuario_cpf,
+    usuario_tipo: session.usuario_tipo,
+  };
 }
 
 export async function updateSession() {

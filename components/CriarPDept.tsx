@@ -27,8 +27,20 @@ import { criarPDeptAct } from "@/lib/actions/criarPDept";
 import { X } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useToast } from "@/hooks/use-toast";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "./ui/select";
+import { TipoUsuario } from "@prisma/client";
 
-const CriarPDept = () => {
+const CriarPDept = ({
+  departamentos,
+}: {
+  departamentos: { nome: string; sigla_dept: string }[];
+}) => {
   const [openDialog, setOpenDialog] = useState(false);
   const [state, setState] = useState({ message: "", success: true });
   const route = useRouter();
@@ -40,8 +52,8 @@ const CriarPDept = () => {
       numero_cpf: "",
       nome: "",
       senha: "",
-      nome_dept: "",
       sigla_dept: "",
+      tipo_pessoa: TipoUsuario.ORIENTADOR,
     },
   });
 
@@ -126,15 +138,29 @@ const CriarPDept = () => {
 
               <FormField
                 control={form.control}
-                name="nome_dept"
+                name="sigla_dept"
                 render={({ field }) => (
                   <FormItem>
                     <FormLabel className="font-bold">
-                      Nome do departamento
+                      Sigla do departamento
                     </FormLabel>
-                    <FormControl>
-                      <Input {...field} />
-                    </FormControl>
+                    <Select
+                      onValueChange={field.onChange}
+                      defaultValue={field.value}
+                    >
+                      <FormControl>
+                        <SelectTrigger>
+                          <SelectValue placeholder="Selecione um departamento" />
+                        </SelectTrigger>
+                      </FormControl>
+                      <SelectContent>
+                        {departamentos.map((value, index) => (
+                          <SelectItem key={index} value={value.sigla_dept}>
+                            {value.sigla_dept}
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
                     <FormMessage />
                   </FormItem>
                 )}
@@ -142,15 +168,28 @@ const CriarPDept = () => {
 
               <FormField
                 control={form.control}
-                name="sigla_dept"
+                name="tipo_pessoa"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel className="font-bold">
-                      Sigla do departamento
-                    </FormLabel>
-                    <FormControl>
-                      <Input {...field} />
-                    </FormControl>
+                    <FormLabel className="font-bold">Tipo de pessoa</FormLabel>
+                    <Select
+                      onValueChange={field.onChange}
+                      defaultValue={field.value}
+                    >
+                      <FormControl>
+                        <SelectTrigger>
+                          <SelectValue placeholder="Selecione um tipo de pessoa" />
+                        </SelectTrigger>
+                      </FormControl>
+                      <SelectContent>
+                        <SelectItem value={TipoUsuario.ADM_DEPT}>
+                          {TipoUsuario.ADM_DEPT}
+                        </SelectItem>
+                        <SelectItem value={TipoUsuario.ORIENTADOR}>
+                          {TipoUsuario.ORIENTADOR}
+                        </SelectItem>
+                      </SelectContent>
+                    </Select>
                     <FormMessage />
                   </FormItem>
                 )}
