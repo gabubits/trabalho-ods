@@ -7,6 +7,8 @@ import prisma from "@/prisma/db";
 import CriarPDept from "./CriarPDept";
 import { PDeptTable, PDept, columnsPDept } from "./TabelaPDepts";
 import { TipoUsuario } from "@prisma/client";
+import { POrient, POrientTable, columnsPOrient } from "./TabelaPOrients";
+import CriarOrientando from "./CriarOrientando";
 
 const DashboardDepartamento = async ({
   numero_cpf,
@@ -84,6 +86,41 @@ const DashboardDepartamento = async ({
     },
   });
 
+  const pessoaDept = await prisma.pessoaDepartamento.findUnique({
+    where: {
+      numero_cpf: numero_cpf, // Aqui precisa passar o CPF do usuário correspondente
+    },
+    select: {
+      sigla_dept: true,
+    },
+  });
+
+  if (!pessoaDept) {
+    throw new Error("Departamento não encontrado para este usuário.");
+  }
+
+  const orientandosDB = await prisma.usuarioComum.findMany({
+    where: {
+      orientando: {
+        curso: pessoaDept.sigla_dept,
+      },
+    },
+    select: {
+      numero_cpf: true,
+      nome: true,
+      tipo: true,
+      orientando: {
+        select: {
+          curso: true,
+        },
+      },
+    },
+  });
+
+  console.log(orientandosDB);
+
+  const pOrients: POrient[] = [];
+
   return (
     <div className="flex justify-center items-center flex-col my-6">
       {isAdmin(numero_cpf) ? (
@@ -104,7 +141,7 @@ const DashboardDepartamento = async ({
           Gerenciamento de projetos
         </h1>
         <div className="flex justify-center items-center mt-4 gap-4">
-          <CriarProjetoDashboard orientadores={orientadores}/>
+          <CriarProjetoDashboard orientadores={orientadores} />
           <ApagarProjetoDashboard />
           <AtualizarProjetoDashboard />
         </div>
@@ -119,12 +156,18 @@ const DashboardDepartamento = async ({
         </div>
         <div>Tabela de Orientadores</div>
       </div>
+      {/*  é ESSA PARTE QUE EU VOU FAZER, JA FIZ O CRIAR E A TABELA */}
       <div>
         <h1 className="font-bold text-4xl">Gerenciamento de Orientandos</h1>
+        {/*  O adm de depart vai ver apenas os orientandos que tiver a mesma sigla do depart */}
         <div className="flex justify-center items-center gap-4">
-          Botões de gerenciamento
+          <CriarOrientando />
         </div>
-        <div>Tabela de Orientandos</div>
+        <div>
+          <div className="h-[500px] w-[1000px] rounded-md bg-white overflow-x-auto p-5">
+            <POrientTable columns={columnsPOrient} data={pOrients} />
+          </div>
+        </div>
       </div>
       <div></div>
     </div>
