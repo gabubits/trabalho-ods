@@ -10,7 +10,7 @@ import {
 } from "./dropdown-menu";
 import { MoreHorizontal } from "lucide-react";
 import { Button } from "./button";
-import { apagarPOrientAct } from "@/lib/actions/orientando/apagar";
+import { apagar } from "@/lib/actions/orientando/apagar";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "./dialog";
 import { POrient } from "../TabelaPOrients";
 import { useState } from "react";
@@ -27,7 +27,7 @@ import {
   FormMessage,
 } from "./form";
 import { Input } from "./input";
-import { attPOrientAct } from "@/lib/actions/orientando/atualizar";
+import { atualizar } from "@/lib/actions/orientando/atualizar";
 import { useRouter } from "next/navigation";
 import { useToast } from "@/hooks/use-toast";
 
@@ -45,15 +45,16 @@ export function DataTableRowActions({ row }: DataTableRowActionsProps) {
   const form = useForm<z.infer<typeof AtualizarPOrientSchema>>({
     resolver: zodResolver(AtualizarPOrientSchema),
     defaultValues: {
-      numero_cpf: row.original.id,
+      numero_cpf: row.original.numero_cpf,
       nome: row.original.nome,
-      nome_dept: row.original.nome_dept,
       curso: row.original.curso,
     },
   });
 
+  console.log(row);
+
   async function onSubmit(values: z.infer<typeof AtualizarPOrientSchema>) {
-    const { message, success } = await attPOrientAct(values);
+    const { message, success } = await atualizar(values);
     if (success) {
       setEditOpen(false);
       route.refresh();
@@ -83,7 +84,7 @@ export function DataTableRowActions({ row }: DataTableRowActionsProps) {
           <Button
             variant="destructive"
             onClick={async () => {
-              await apagarPOrientAct(row.original.id);
+              await apagar(row.original.numero_cpf);
               setDeleteOpen(false);
               route.refresh();
               toast({
@@ -103,7 +104,7 @@ export function DataTableRowActions({ row }: DataTableRowActionsProps) {
         <DialogContent className="max-w-3xl">
           <DialogHeader>
             <DialogTitle>
-              Atualizar {row.original.nome} ({row.original.id})
+              Atualizar {row.original.nome} ({row.original.numero_cpf})
             </DialogTitle>
           </DialogHeader>
           <Form {...form}>

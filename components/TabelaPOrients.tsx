@@ -25,17 +25,15 @@ import { ArrowLeft, ArrowRight } from "lucide-react";
 import { DataTableRowActions } from "./ui/TabelaPOrientsRowActions";
 
 export type POrient = {
-  id: string;
+  numero_cpf: string;
   nome: string;
-  nome_dept: string;
   curso: string;
 };
 
 export const columnsPOrient: ColumnDef<POrient>[] = [
   { accessorKey: "numero_cpf", header: "CPF" },
   { accessorKey: "nome", header: "Nome" },
-  { accessorKey: "nome_dept", header: "Nome do Dept." },
-  { accessorKey: "sigla_dept", header: "Sigla do Dept." },
+  { accessorKey: "curso", header: "Curso" },
   {
     id: "actions",
     cell: ({ row }) => <DataTableRowActions row={row} />,

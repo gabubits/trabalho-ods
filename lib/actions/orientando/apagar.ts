@@ -2,7 +2,7 @@
 
 import prisma from "@/prisma/db";
 
-export async function apagarPOrientAct(numero_cpf: string) {
+export async function apagar(numero_cpf: string) {
     await prisma.orientando.deleteMany({
         where: {
             numero_cpf: numero_cpf,

@@ -270,69 +270,70 @@ async function main2() {
 
 async function main3() {
 
-  const departamento = await prisma.departamento.create({
-    data: {
-      sigla_dept: "DECO",
-      nome: "Departamento de Economia",
-    },
-  });
+  // const departamento = await prisma.departamento.create({
+  //   data: {
+  //     sigla_dept: "DCOMP",
+  //     nome: "Departamento de Ciencia da Computação",
+  //   },
+  // });
 
 
-  const orientando = await prisma.usuarioComum.create({
+  // const orientando = await prisma.usuarioComum.create({
+  //   data: {
+  //     numero_cpf: "11111111111",
+  //     nome: "João Silva",
+  //     senha: "12345678",
+  //     tipo: TipoUsuario.ORIENTANDO,
+  //     orientando: {
+  //       create: {
+  //         curso: "DECO",
+  //       },
+  //     },
+  //   },
+  // });
+
+  const Administrador = await prisma.usuarioComum.create({
     data: {
-      numero_cpf: "11111111111",
-      nome: "João Silva",
+      numero_cpf: "77777777777",
+      nome: "Kaio",
       senha: "12345678",
-      tipo: TipoUsuario.ORIENTANDO,
-      orientando: {
-        create: {
-          curso: "DECO",
-        },
-      },
+      tipo: TipoUsuario.ADM_GERAL,
+
     },
   });
 
-  const orientador = await prisma.usuarioComum.create({
-    data: {
-      numero_cpf: "22222222222",
-      nome: "Maria Oliveira",
-      senha: "12345678",
-      tipo: TipoUsuario.ORIENTADOR,
-      orientador: {
-        create: {
-          sigla_dept: "DECO",
-          descricao_pessoal: "Professora com experiência em Economia",
-        },
-      },
-    },
-  });
 
-  const admDept = await prisma.usuarioComum.create({
-    data: {
-      numero_cpf: "99999999999",
-      nome: "Carlos Santos",
-      senha: "12345678",
-      tipo: TipoUsuario.ADM_DEPT,
-      orientador: {
-        create: {
-          sigla_dept: "DECO",
-          descricao_pessoal: "Administrador do Departamento de Economia",
-        },
-      },
-    },
-  });
+  // const usuarioAdmDept = await prisma.usuarioComum.create({
+  //   data: {
+  //     numero_cpf: "99999999999",
+  //     nome: "Carlos Santos",
+  //     senha: "12345678",
+  //     tipo: "ADM_DEPT",
+  //   },
+  // });
 
-  const projeto = await prisma.projeto.create({
-    data: {
-      tipo: TipoProjeto.EXTENSAO,
-      nome: "Impacto da Economia Circular",
-      data_inicio: new Date("2024-02-06"),
-      data_termino: new Date("2024-12-20"),
-      descricao: "Projeto de pesquisa sobre economia circular",
-      orientador_cpf: "22222222222",
-      status: "NAO_INICIADO",
-    },
-  });
+
+  // const pessoaDept = await prisma.pessoaDepartamento.create({
+  //   data: {
+  //     numero_cpf: usuarioAdmDept.numero_cpf, // Usamos o CPF do usuário criado
+  //     sigla_dept: "DCOMP", // Deve ser um departamento já existente
+  //     descricao_pessoal: "Administrador do Departamento de Economia",
+  //   },
+  // });
+
+
+
+  // const projeto = await prisma.projeto.create({
+  //   data: {
+  //     tipo: TipoProjeto.EXTENSAO,
+  //     nome: "Impacto da Economia Circular",
+  //     data_inicio: new Date("2024-02-06"),
+  //     data_termino: new Date("2024-12-20"),
+  //     descricao: "Projeto de pesquisa sobre economia circular",
+  //     orientador_cpf: "22222222222",
+  //     status: "NAO_INICIADO",
+  //   },
+  // });
 
 
 

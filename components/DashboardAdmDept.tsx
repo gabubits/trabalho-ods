@@ -50,21 +50,21 @@ const DashboardAdmDept = async () => {
       numero_cpf: session.usuario_cpf,
     },
     select: {
-      sigla_dept: true, // Pegamos a sigla do departamento
+      sigla_dept: true,
     },
   });
 
+  let pOrientDB: any[] = [];
+
   if (pessoaDept) {
-    const orientandosDB = await prisma.orientando.findMany({
+    pOrientDB = await prisma.orientando.findMany({
       where: {
-        curso: pessoaDept.sigla_dept, // Filtramos pelo curso que bate com a sigla
+        curso: pessoaDept.sigla_dept,
       },
       include: {
         UsuarioComum: true,
       },
     });
-
-    console.log(orientandosDB);
   }
 
   const pDepts: PDept[] = [];
@@ -107,6 +107,14 @@ const DashboardAdmDept = async () => {
         orientador_nome: proj.Orientador.UsuarioComum.nome,
       });
     }
+
+    for (const pOrientsData of pOrientDB) {
+      pOrients.push({
+        numero_cpf: pOrientsData.numero_cpf,
+        nome: pOrientsData.UsuarioComum.nome,
+        curso: pOrientsData.curso,
+      });
+    }
   }
 
   return (
@@ -141,9 +149,11 @@ const DashboardAdmDept = async () => {
         </div>
       </div>
       <div>
-        <h1 className="font-bold text-4xl">Gerenciamento de Orientandos</h1>
-        <div className="flex justify-center items-center gap-4">
-          Botões de gerenciamento
+        <h1 className="font-bold text-4xl text-center">
+          Gerenciamento de Orientandos
+        </h1>
+        <div className="flex justify-center items-center mt-4 gap-4">
+          <CriarOrientando />
         </div>
         <div className="h-[500px] w-[1000px] rounded-md bg-white overflow-x-auto p-5">
           <POrientTable columns={columnsPOrient} data={pOrients} />

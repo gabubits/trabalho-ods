@@ -22,7 +22,6 @@ export const AtualizarPOrientSchema = z.object({
         .trim()
         .length(11, { message: "O CPF deve ter 11 números." }),
     nome: z.string().nonempty({ message: "Digite o nome." }),
-    nome_dept: z.string().nonempty({ message: "Digite o nome do departamento." }),
     curso: z
         .string()
         .nonempty({ message: "Digite a sigla do curso." }),

@@ -8,7 +8,7 @@ export type FormState = {
     message: string;
 };
 
-export async function criarOrientAct(data: z.infer<typeof CriarPOrientSchema>) {
+export async function criar(data: z.infer<typeof CriarPOrientSchema>) {
     const POrientExistente = await prisma.usuarioComum.findFirst({
         where: {
             numero_cpf: data.numero_cpf,
