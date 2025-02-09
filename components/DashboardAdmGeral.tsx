@@ -2,39 +2,15 @@ import React from "react";
 import prisma from "@/prisma/db";
 import CriarPDept from "./CriarPDept";
 import { PDeptTable, PDept, columnsPDept } from "./TabelaPDepts";
-import { verifySession } from "@/lib/session";
 import CriarDept from "./CriarDept";
 import { columnsDept, DeptTable } from "./TabelaDepts";
 import CriarProjeto from "./CriarProjeto";
 import { columns, TabelaProjetosDash } from "./TabelaProjetosDash";
 
 const DashboardAdmGeral = async () => {
-  const session = await verifySession();
-
-  const meuDepartamento = await prisma.pessoaDepartamento.findMany({
-    where: {
-      numero_cpf: session.usuario_cpf,
-    },
-    select: {
-      sigla_dept: true,
-    },
-  });
-
-  const departamentos = await prisma.departamento.findMany({
-    where: {
-      NOT: {
-        sigla_dept:
-          meuDepartamento.length !== 0 ? meuDepartamento[0].sigla_dept : "",
-      },
-    },
-  });
+  const departamentos = await prisma.departamento.findMany({});
 
   const pDeptDB = await prisma.pessoaDepartamento.findMany({
-    where: {
-      NOT: {
-        numero_cpf: session.usuario_cpf,
-      },
-    },
     select: {
       numero_cpf: true,
       sigla_dept: true,
@@ -63,6 +39,9 @@ const DashboardAdmGeral = async () => {
       id: true,
       nome: true,
       tipo: true,
+      data_inicio: true,
+      data_termino: true,
+      descricao: true,
       Orientador: {
         select: {
           UsuarioComum: {
@@ -111,14 +90,17 @@ const DashboardAdmGeral = async () => {
             }))}
           />
         </div>
-        <div className=" h-[500px] w-[1000px] rounded-md bg-white overflow-x-auto p-5">
+        <div className=" max-h-fit max-w-fit rounded-md bg-white overflow-x-auto p-5">
           <TabelaProjetosDash
             columns={columns}
             data={projetos.map((value) => ({
               id: value.id,
-              nome_proj: value.nome,
-              tipo_proj: value.tipo,
+              nome: value.nome,
+              tipo: value.tipo,
               orientador_nome: value.Orientador.UsuarioComum.nome,
+              data_inicio: value.data_inicio,
+              data_termino: value.data_termino,
+              descricao: value.descricao,
             }))}
           />
         </div>

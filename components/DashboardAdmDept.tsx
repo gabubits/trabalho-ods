@@ -62,6 +62,9 @@ const DashboardAdmDept = async () => {
         id: true,
         nome: true,
         tipo: true,
+        data_inicio: true,
+        data_termino: true,
+        descricao: true,
         Orientador: {
           select: {
             UsuarioComum: {
@@ -77,9 +80,12 @@ const DashboardAdmDept = async () => {
     for (const proj of pDeptProjetos) {
       projetos.push({
         id: proj.id,
-        nome_proj: proj.nome,
-        tipo_proj: proj.tipo,
+        nome: proj.nome,
+        tipo: proj.tipo,
         orientador_nome: proj.Orientador.UsuarioComum.nome,
+        data_inicio: proj.data_inicio,
+        data_termino: proj.data_termino,
+        descricao: proj.descricao,
       });
     }
   }
