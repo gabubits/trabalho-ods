@@ -5,6 +5,8 @@ import { PDeptTable, PDept, columnsPDept } from "./TabelaPDepts";
 import { verifySession } from "@/lib/session";
 import { columns, Projeto, TabelaProjetosDash } from "./TabelaProjetosDash";
 import CriarProjeto from "./CriarProjeto";
+import CriarOrientando from "./CriarOrientando";
+import { POrient, POrientTable, columnsPOrient } from "./TabelaPOrients";
 
 const DashboardAdmDept = async () => {
   const session = await verifySession();
@@ -43,8 +45,31 @@ const DashboardAdmDept = async () => {
     },
   });
 
+  const pessoaDept = await prisma.pessoaDepartamento.findFirst({
+    where: {
+      numero_cpf: session.usuario_cpf,
+    },
+    select: {
+      sigla_dept: true,
+    },
+  });
+
+  let pOrientDB: any[] = [];
+
+  if (pessoaDept) {
+    pOrientDB = await prisma.orientando.findMany({
+      where: {
+        curso: pessoaDept.sigla_dept,
+      },
+      include: {
+        UsuarioComum: true,
+      },
+    });
+  }
+
   const pDepts: PDept[] = [];
   const projetos: Projeto[] = [];
+  const pOrients: POrient[] = [];
 
   for (const pDept of pDeptDB) {
     pDepts.push({
@@ -88,6 +113,14 @@ const DashboardAdmDept = async () => {
         descricao: proj.descricao,
       });
     }
+
+    for (const pOrientsData of pOrientDB) {
+      pOrients.push({
+        numero_cpf: pOrientsData.numero_cpf,
+        nome: pOrientsData.UsuarioComum.nome,
+        curso: pOrientsData.curso,
+      });
+    }
   }
 
   return (
@@ -122,11 +155,15 @@ const DashboardAdmDept = async () => {
         </div>
       </div>
       <div>
-        <h1 className="font-bold text-4xl">Gerenciamento de Orientandos</h1>
-        <div className="flex justify-center items-center gap-4">
-          Botões de gerenciamento
+        <h1 className="font-bold text-4xl text-center">
+          Gerenciamento de Orientandos
+        </h1>
+        <div className="flex justify-center items-center mt-4 gap-4">
+          <CriarOrientando />
         </div>
-        <div>Tabela de Orientandos</div>
+        <div className="h-[500px] w-[1000px] rounded-md bg-white overflow-x-auto p-5">
+          <POrientTable columns={columnsPOrient} data={pOrients} />
+        </div>
       </div>
       <div></div>
     </div>

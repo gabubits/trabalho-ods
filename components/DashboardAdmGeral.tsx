@@ -6,6 +6,9 @@ import CriarDept from "./CriarDept";
 import { columnsDept, DeptTable } from "./TabelaDepts";
 import CriarProjeto from "./CriarProjeto";
 import { columns, TabelaProjetosDash } from "./TabelaProjetosDash";
+import CriarOrientando from "./CriarOrientando";
+import { POrient, POrientTable, columnsPOrient } from "./TabelaPOrients";
+import { TipoUsuario } from "@prisma/client";
 
 const DashboardAdmGeral = async () => {
   const departamentos = await prisma.departamento.findMany({});
@@ -53,6 +56,30 @@ const DashboardAdmGeral = async () => {
       },
     },
   });
+
+  const POrientDB = await prisma.usuarioComum.findMany({
+    where: {
+      orientando: {
+        isNot: null,
+      },
+    },
+    select: {
+      numero_cpf: true,
+      nome: true,
+      tipo: true,
+      orientando: {
+        select: {
+          curso: true,
+        },
+      },
+    },
+  });
+
+  const pOrients: POrient[] = POrientDB.map((pOrient) => ({
+    numero_cpf: pOrient.numero_cpf,
+    nome: pOrient.nome,
+    curso: pOrient.orientando?.curso ?? "",
+  }));
 
   return (
     <div className="flex justify-center items-center flex-col my-6">
@@ -106,11 +133,15 @@ const DashboardAdmGeral = async () => {
         </div>
       </div>
       <div>
-        <h1 className="font-bold text-4xl">Gerenciamento de Orientandos</h1>
-        <div className="flex justify-center items-center gap-4">
-          Botões de gerenciamento
+        <h1 className="font-bold text-4xl text-center">
+          Gerenciamento de Orientandos
+        </h1>
+        <div className="flex justify-center items-center mt-4 gap-4">
+          <CriarOrientando />
         </div>
-        <div>Tabela de Orientandos</div>
+        <div className="h-[500px] w-[1000px] rounded-md bg-white overflow-x-auto p-5">
+          <POrientTable columns={columnsPOrient} data={pOrients} />
+        </div>
       </div>
       <div></div>
     </div>
