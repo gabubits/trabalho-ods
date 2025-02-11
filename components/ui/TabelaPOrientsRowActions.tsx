@@ -51,8 +51,6 @@ export function DataTableRowActions({ row }: DataTableRowActionsProps) {
     },
   });
 
-  console.log(row);
-
   async function onSubmit(values: z.infer<typeof AtualizarPOrientSchema>) {
     const { message, success } = await atualizar(values);
     if (success) {
@@ -144,7 +142,7 @@ export function DataTableRowActions({ row }: DataTableRowActionsProps) {
                   render={({ field }) => (
                     <FormItem>
                       <FormLabel className="font-bold">
-                        Sigla do curso ou departamento
+                        Sigla do curso
                       </FormLabel>
                       <FormControl>
                         <Input {...field} />

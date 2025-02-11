@@ -3,6 +3,7 @@ import { CriarProjetoSchema } from "./schemas";
 import { z } from "zod";
 import prisma from "@/prisma/db";
 import { StatusProjeto } from "@prisma/client";
+import { registrarHistorico } from "../registrarHistorico";
 
 export type FormState = {
   message: string;
@@ -23,6 +24,9 @@ export async function criarProjetoAct(
     },
   });
 
+  await registrarHistorico(
+    `[Sucesso, Sistema]: PROJETO "${data.nome}" criado.`
+  );
   return {
     success: true,
     message: `Projeto "${data.nome}" criado com sucesso!`,

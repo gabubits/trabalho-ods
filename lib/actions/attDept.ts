@@ -3,6 +3,7 @@
 import { AtualizarDeptSchema } from "./schemas";
 import { z } from "zod";
 import prisma from "@/prisma/db";
+import { registrarHistorico } from "../registrarHistorico";
 
 export async function attDeptAct(data: z.infer<typeof AtualizarDeptSchema>) {
   const deptAlterado = await prisma.departamento.update({
@@ -25,6 +26,9 @@ export async function attDeptAct(data: z.infer<typeof AtualizarDeptSchema>) {
   });
 
   if (deptAlterado) {
+    await registrarHistorico(
+      `[Sucesso, Sistema]: DEPT ${data.sigla_dept_antiga} alterado.`
+    );
     return {
       success: true,
       message: `${deptAlterado.nome} (${deptAlterado.sigla_dept}) alterado com sucesso!`,

@@ -10,10 +10,7 @@ const DashboardOrientador = async () => {
     where: {
       orientador_cpf: session.usuario_cpf,
     },
-    select: {
-      id: true,
-      nome: true,
-      tipo: true,
+    include: {
       Orientador: {
         select: {
           UsuarioComum: {
@@ -37,9 +34,7 @@ const DashboardOrientador = async () => {
           <TabelaProjetosDash
             columns={columns}
             data={projetos.map((value) => ({
-              id: value.id,
-              nome_proj: value.nome,
-              tipo_proj: value.tipo,
+              ...value,
               orientador_nome: value.Orientador.UsuarioComum.nome,
             }))}
           />

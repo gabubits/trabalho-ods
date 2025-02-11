@@ -8,7 +8,6 @@ import CriarProjeto from "./CriarProjeto";
 import { columns, TabelaProjetosDash } from "./TabelaProjetosDash";
 import CriarOrientando from "./CriarOrientando";
 import { POrient, POrientTable, columnsPOrient } from "./TabelaPOrients";
-import { TipoUsuario } from "@prisma/client";
 
 const DashboardAdmGeral = async () => {
   const departamentos = await prisma.departamento.findMany({});
@@ -38,13 +37,7 @@ const DashboardAdmGeral = async () => {
   }
 
   const projetos = await prisma.projeto.findMany({
-    select: {
-      id: true,
-      nome: true,
-      tipo: true,
-      data_inicio: true,
-      data_termino: true,
-      descricao: true,
+    include: {
       Orientador: {
         select: {
           UsuarioComum: {
@@ -128,6 +121,9 @@ const DashboardAdmGeral = async () => {
               data_inicio: value.data_inicio,
               data_termino: value.data_termino,
               descricao: value.descricao,
+              status: value.status,
+              link_certificado: value.link_certificado,
+              session_tipo: "ADM_GERAL",
             }))}
           />
         </div>
@@ -137,7 +133,7 @@ const DashboardAdmGeral = async () => {
           Gerenciamento de Orientandos
         </h1>
         <div className="flex justify-center items-center mt-4 gap-4">
-          <CriarOrientando />
+          <CriarOrientando departamentos={departamentos} />
         </div>
         <div className="h-[500px] w-[1000px] rounded-md bg-white overflow-x-auto p-5">
           <POrientTable columns={columnsPOrient} data={pOrients} />

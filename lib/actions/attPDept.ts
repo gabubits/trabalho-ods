@@ -3,6 +3,7 @@
 import { AtualizarPDeptSchema } from "./schemas";
 import { z } from "zod";
 import prisma from "@/prisma/db";
+import { registrarHistorico } from "../registrarHistorico";
 
 export async function attPDeptAct(data: z.infer<typeof AtualizarPDeptSchema>) {
   const deptExiste = await prisma.departamento.findMany({
@@ -12,6 +13,9 @@ export async function attPDeptAct(data: z.infer<typeof AtualizarPDeptSchema>) {
   });
 
   if (deptExiste.length === 0) {
+    await registrarHistorico(
+      `[Falha, Sistema]: PDEPT ${data.numero_cpf} não atualizou`
+    );
     return {
       success: false,
       message: `${data.sigla_dept} não existe!`,
@@ -37,6 +41,9 @@ export async function attPDeptAct(data: z.infer<typeof AtualizarPDeptSchema>) {
     },
   });
 
+  await registrarHistorico(
+    `[Sucesso, Sistema]: PDEPT ${data.numero_cpf} atualizado`
+  );
   if (pDeptAlterado) {
     return {
       success: true,

@@ -24,13 +24,22 @@ import { Button } from "./ui/button";
 import { Input } from "./ui/input";
 import { CriarPOrientSchema } from "@/lib/actions/orientando/schemas";
 import { criar } from "@/lib/actions/orientando/criar";
-import { X } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useToast } from "@/hooks/use-toast";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "./ui/select";
 
-const CriarOrientando = () => {
+const CriarOrientando = ({
+  departamentos,
+}: {
+  departamentos: { nome: string; sigla_dept: string }[];
+}) => {
   const [openDialog, setOpenDialog] = useState(false);
-  const [state, setState] = useState({ message: "", success: true });
   const route = useRouter();
   const { toast } = useToast();
 
@@ -39,7 +48,6 @@ const CriarOrientando = () => {
     defaultValues: {
       numero_cpf: "",
       nome: "",
-      senha: "",
       curso: "",
     },
   });
@@ -63,8 +71,6 @@ const CriarOrientando = () => {
         duration: 3000,
       });
     }
-
-    setState({ message, success });
   }
 
   return (
@@ -111,39 +117,32 @@ const CriarOrientando = () => {
 
               <FormField
                 control={form.control}
-                name="senha"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel className="font-bold">Senha</FormLabel>
-                    <FormControl>
-                      <Input type="password" {...field} />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-
-              <FormField
-                control={form.control}
                 name="curso"
                 render={({ field }) => (
                   <FormItem>
                     <FormLabel className="font-bold">Curso</FormLabel>
-                    <FormControl>
-                      <Input {...field} />
-                    </FormControl>
+                    <Select
+                      onValueChange={field.onChange}
+                      defaultValue={field.value}
+                    >
+                      <FormControl>
+                        <SelectTrigger>
+                          <SelectValue placeholder="Selecione um curso" />
+                        </SelectTrigger>
+                      </FormControl>
+                      <SelectContent>
+                        {departamentos.map((value, index) => (
+                          <SelectItem key={index} value={value.sigla_dept}>
+                            {`${value.sigla_dept} - ${value.nome}`}
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
                     <FormMessage />
                   </FormItem>
                 )}
               />
             </div>
-            {!state.success ? (
-              <p className="font-bold text-red-600">
-                <span>
-                  <X fill="red" /> {state.message}
-                </span>
-              </p>
-            ) : null}
             <div className="flex space-x-4">
               <Button type="submit">Criar</Button>
             </div>

@@ -6,12 +6,12 @@ import { verifySession } from "@/lib/session";
 import { columns, Projeto, TabelaProjetosDash } from "./TabelaProjetosDash";
 import CriarProjeto from "./CriarProjeto";
 import CriarOrientando from "./CriarOrientando";
-import { POrient, POrientTable, columnsPOrient } from "./TabelaPOrients";
+import { POrientTable, columnsPOrient } from "./TabelaPOrients";
 
 const DashboardAdmDept = async () => {
   const session = await verifySession();
 
-  const departamento = await prisma.pessoaDepartamento.findFirst({
+  const departamento = await prisma.pessoaDepartamento.findFirstOrThrow({
     where: {
       numero_cpf: session.usuario_cpf,
     },
@@ -45,7 +45,7 @@ const DashboardAdmDept = async () => {
     },
   });
 
-  const pessoaDept = await prisma.pessoaDepartamento.findFirst({
+  const pessoaDept = await prisma.pessoaDepartamento.findFirstOrThrow({
     where: {
       numero_cpf: session.usuario_cpf,
     },
@@ -54,22 +54,21 @@ const DashboardAdmDept = async () => {
     },
   });
 
-  let pOrientDB: any[] = [];
-
-  if (pessoaDept) {
-    pOrientDB = await prisma.orientando.findMany({
-      where: {
-        curso: pessoaDept.sigla_dept,
+  const pOrientDB = await prisma.orientando.findMany({
+    where: {
+      curso: pessoaDept.sigla_dept,
+    },
+    include: {
+      UsuarioComum: {
+        select: {
+          nome: true,
+        },
       },
-      include: {
-        UsuarioComum: true,
-      },
-    });
-  }
+    },
+  });
 
   const pDepts: PDept[] = [];
   const projetos: Projeto[] = [];
-  const pOrients: POrient[] = [];
 
   for (const pDept of pDeptDB) {
     pDepts.push({
@@ -83,13 +82,7 @@ const DashboardAdmDept = async () => {
       where: {
         orientador_cpf: pDept.numero_cpf,
       },
-      select: {
-        id: true,
-        nome: true,
-        tipo: true,
-        data_inicio: true,
-        data_termino: true,
-        descricao: true,
+      include: {
         Orientador: {
           select: {
             UsuarioComum: {
@@ -111,14 +104,9 @@ const DashboardAdmDept = async () => {
         data_inicio: proj.data_inicio,
         data_termino: proj.data_termino,
         descricao: proj.descricao,
-      });
-    }
-
-    for (const pOrientsData of pOrientDB) {
-      pOrients.push({
-        numero_cpf: pOrientsData.numero_cpf,
-        nome: pOrientsData.UsuarioComum.nome,
-        curso: pOrientsData.curso,
+        status: proj.status,
+        link_certificado: proj.link_certificado,
+        session_tipo: session.usuario_tipo,
       });
     }
   }
@@ -130,9 +118,7 @@ const DashboardAdmDept = async () => {
           Gerenciamento de Pessoas
         </h1>
         <div className="flex justify-center items-center mt-4 gap-4">
-          <CriarPDept
-            departamentos={departamento ? [departamento.Departamento] : []}
-          />
+          <CriarPDept departamentos={[departamento.Departamento]} />
         </div>
         <div className="h-[500px] w-[1000px] rounded-md bg-white overflow-x-auto p-5">
           <PDeptTable columns={columnsPDept} data={pDepts} />
@@ -159,10 +145,17 @@ const DashboardAdmDept = async () => {
           Gerenciamento de Orientandos
         </h1>
         <div className="flex justify-center items-center mt-4 gap-4">
-          <CriarOrientando />
+          <CriarOrientando departamentos={[departamento.Departamento]} />
         </div>
         <div className="h-[500px] w-[1000px] rounded-md bg-white overflow-x-auto p-5">
-          <POrientTable columns={columnsPOrient} data={pOrients} />
+          <POrientTable
+            columns={columnsPOrient}
+            data={pOrientDB.map((values) => ({
+              numero_cpf: values.numero_cpf,
+              curso: values.curso,
+              nome: values.UsuarioComum.nome,
+            }))}
+          />
         </div>
       </div>
       <div></div>

@@ -51,7 +51,6 @@ const CriarPDept = ({
     defaultValues: {
       numero_cpf: "",
       nome: "",
-      senha: "",
       sigla_dept: "",
       tipo_pessoa: TipoUsuario.ORIENTADOR,
     },
@@ -116,20 +115,6 @@ const CriarPDept = ({
                     <FormLabel className="font-bold">Nome</FormLabel>
                     <FormControl>
                       <Input {...field} />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-
-              <FormField
-                control={form.control}
-                name="senha"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel className="font-bold">Senha</FormLabel>
-                    <FormControl>
-                      <Input type="password" {...field} />
                     </FormControl>
                     <FormMessage />
                   </FormItem>

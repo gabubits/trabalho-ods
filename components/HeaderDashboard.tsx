@@ -3,6 +3,8 @@ import Link from "next/link";
 import BotaoSair from "./ui/sair-button";
 import { verifySession } from "@/lib/session";
 import { TipoUsuario } from "@prisma/client";
+import AlterarSenha from "./AlterarSenha";
+import GerarRelatorioSistema from "./GerarRelatorioSistema";
 
 const HeaderDashboard = async () => {
   const session = await verifySession();
@@ -53,7 +55,11 @@ const HeaderDashboard = async () => {
           </>
         )}
       </div>
-      <div className="flex justify-end">
+      <div className="flex justify-end gap-3">
+        {session.usuario_tipo === TipoUsuario.ADM_GERAL && (
+          <GerarRelatorioSistema />
+        )}
+        <AlterarSenha numero_cpf={session.usuario_cpf} />
         <BotaoSair />
       </div>
     </header>

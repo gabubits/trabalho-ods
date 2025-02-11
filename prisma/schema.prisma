@@ -38,6 +38,11 @@ enum TipoProjeto {
   TCC
 }
 
+enum SituacaoOrientando {
+  ORIENTANDO
+  EXORIENTANDO
+}
+
 model UsuarioComum {
   numero_cpf String      @id
   nome       String
@@ -54,14 +59,16 @@ model Orientando {
   curso      String
 
   UsuarioComum       UsuarioComum        @relation(fields: [numero_cpf], references: [numero_cpf])
+  Departamento       Departamento        @relation(fields: [curso], references: [sigla_dept])
   ProjetosOrientando ProjetoOrientando[]
 }
 
 model Departamento {
   sigla_dept String @id @unique
-  nome String
+  nome       String
 
-  pessoas PessoaDepartamento[]
+  pessoas     PessoaDepartamento[]
+  orientandos Orientando[]
 }
 
 model PessoaDepartamento {
@@ -69,42 +76,42 @@ model PessoaDepartamento {
   sigla_dept        String
   descricao_pessoal String?
 
-  UsuarioComum UsuarioComum @relation(fields: [numero_cpf], references: [numero_cpf])
-  Departamento Departamento @relation(fields: [sigla_dept], references: [sigla_dept])
-  projetos     Projeto[]
+  UsuarioComum       UsuarioComum                  @relation(fields: [numero_cpf], references: [numero_cpf])
+  Departamento       Departamento                  @relation(fields: [sigla_dept], references: [sigla_dept])
+  projetos           Projeto[]
+  BancaAvaliadoraUni BancaAvaliadoraUniversidade[]
 }
 
 model Projeto {
-  id             Int            @id @default(autoincrement())
-  tipo           TipoProjeto
-  nome           String
-  data_inicio    DateTime
-  data_termino   DateTime
-  descricao      String?
-  orientador_cpf String
-  apresentacoes  String?
-  banca_local    String?
-  banca_data     DateTime?
-  status         StatusProjeto?
+  id               Int            @id @default(autoincrement())
+  tipo             TipoProjeto
+  nome             String
+  data_inicio      DateTime
+  data_termino     DateTime
+  descricao        String?
+  orientador_cpf   String
+  apresentacoes    String?
+  banca_local      String?
+  banca_data       DateTime?
+  status           StatusProjeto
+  link_certificado String?
 
-  Orientador         PessoaDepartamento     @relation(fields: [orientador_cpf], references: [numero_cpf])
-  ProjetosOrientando ProjetoOrientando[]
-  Topicos            Topico[]
-  BancaAvaliadora    BancaAvaliadora[]
-  Historicos         HistoricoProjeto[]
-  Solicitacoes       SolicitacaoAlteracao[]
+  Orientador          PessoaDepartamento            @relation(fields: [orientador_cpf], references: [numero_cpf])
+  ProjetosOrientando  ProjetoOrientando[]
+  Topicos             Topico[]
+  BancaAvaliadoraUni  BancaAvaliadoraUniversidade[]
+  BancaAvaliadoraConv BancaAvaliadoraConvidada[]
 }
 
 model ProjetoOrientando {
+  id             Int                @id @default(autoincrement())
   projeto_id     Int
   orientando_cpf String
   data_entrada   DateTime
   data_saida     DateTime
-  situacao       String
-  Orientando     Orientando? @relation(fields: [orientando_cpf], references: [numero_cpf])
-  Projeto        Projeto?    @relation(fields: [projeto_id], references: [id])
-
-  @@id([projeto_id, orientando_cpf])
+  situacao       SituacaoOrientando
+  Orientando     Orientando         @relation(fields: [orientando_cpf], references: [numero_cpf])
+  Projeto        Projeto            @relation(fields: [projeto_id], references: [id])
 }
 
 model Topico {
@@ -130,33 +137,27 @@ model Mensagem {
   enviado_por UsuarioComum @relation(fields: [enviado_por_id], references: [numero_cpf])
 }
 
-model BancaAvaliadora {
+model BancaAvaliadoraUniversidade {
+  cpf        String
   projeto_id Int
-  membro_id  String
-  tipo       String
+  id         Int    @id @default(autoincrement())
+
+  Projeto Projeto            @relation(fields: [projeto_id], references: [id])
+  Membro  PessoaDepartamento @relation(fields: [cpf], references: [numero_cpf])
+}
+
+model BancaAvaliadoraConvidada {
+  projeto_id Int
+  id         Int    @id @default(autoincrement())
   nome       String
   ies        String
-
-  Projeto Projeto @relation(fields: [projeto_id], references: [id])
-
-  @@id([projeto_id, membro_id])
-}
-
-model SolicitacaoAlteracao {
-  id                Int                 @id @default(autoincrement())
-  projeto_id        Int
-  assunto_principal String
-  motivo            String
-  situacao          SituacaoSolicitacao
+  cpf        String
 
   Projeto Projeto @relation(fields: [projeto_id], references: [id])
 }
 
-model HistoricoProjeto {
+model HistoricoSistema {
   id         Int      @id @default(autoincrement())
-  projeto_id Int
   data       DateTime
   conteudo   String
-
-  Projeto Projeto @relation(fields: [projeto_id], references: [id])
 }

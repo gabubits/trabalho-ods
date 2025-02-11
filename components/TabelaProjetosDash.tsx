@@ -23,42 +23,74 @@ import {
 
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { ArrowLeft, ArrowRight, ArrowRightFromLine } from "lucide-react";
+import { ArrowLeft, ArrowRight } from "lucide-react";
 
-import { TipoProjeto } from "@prisma/client";
-import Link from "next/link";
+import { StatusProjeto, TipoProjeto } from "@prisma/client";
+import { format } from "date-fns/format";
+import { ptBR } from "date-fns/locale/pt-BR";
+import { DataTableRowActions } from "./ui/TabelaPRowActions";
 
 export type Projeto = {
   id: number;
-  nome_proj: string;
-  tipo_proj: TipoProjeto;
+  nome: string;
+  tipo: TipoProjeto;
   orientador_nome: string;
+  data_inicio: Date;
+  data_termino: Date;
+  descricao: string | null;
+  status: StatusProjeto;
+  link_certificado: string | null;
+  session_tipo: string;
 };
 
 export const columns: ColumnDef<Projeto>[] = [
   {
-    accessorKey: "nome_proj",
-    header: "Nome do projeto",
+    accessorKey: "nome",
+    header: () => <div className="w-[500px]">Nome</div>,
+    cell: ({ row }) => {
+      return <div className="w-[500px] break-all">{row.getValue("nome")}</div>;
+    },
   },
   {
-    accessorKey: "tipo_proj",
-    header: "Tipo de projeto",
+    accessorKey: "tipo",
+    header: "Tipo",
   },
   {
     accessorKey: "orientador_nome",
-    header: "Orientador",
+    header: () => <div className="w-[150px]">Orientador</div>,
+    cell: ({ row }) => {
+      return (
+        <div className="w-[150px] break-all">
+          {row.getValue("orientador_nome")}
+        </div>
+      );
+    },
+  },
+  {
+    accessorKey: "data_inicio",
+    header: () => <div className="w-[150px]">Data de início</div>,
+    cell: ({ row }) => {
+      return (
+        <div className="w-[150px] break-all">
+          {format(row.getValue("data_inicio"), "PPpp", { locale: ptBR })}
+        </div>
+      );
+    },
+  },
+  {
+    accessorKey: "data_termino",
+    header: () => <div className="w-[150px]">Data de término</div>,
+    cell: ({ row }) => {
+      return (
+        <div className="w-[150px] break-all">
+          {format(row.getValue("data_termino"), "PPpp", { locale: ptBR })}
+        </div>
+      );
+    },
   },
   {
     id: "actions",
-    cell: ({ row }) => {
-      return (
-        <Link href={`/dashboard/${row.original.id}`}>
-          <Button variant="ghost" className="h-8 w-8 p-0">
-            <ArrowRightFromLine className="h-4 w-4" />
-          </Button>
-        </Link>
-      );
-    },
+    cell: ({ row }) => <DataTableRowActions row={row} />,
   },
 ];
 
@@ -92,11 +124,9 @@ export function TabelaProjetosDash<TData, TValue>({
       <div className="flex justify-center items-center py-4">
         <Input
           placeholder="Filtrar projetos..."
-          value={
-            (table.getColumn("nome_proj")?.getFilterValue() as string) ?? ""
-          }
+          value={(table.getColumn("nome")?.getFilterValue() as string) ?? ""}
           onChange={(event) =>
-            table.getColumn("nome_proj")?.setFilterValue(event.target.value)
+            table.getColumn("nome")?.setFilterValue(event.target.value)
           }
           className="max-w-sm"
         />

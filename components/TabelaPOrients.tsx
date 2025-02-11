@@ -54,7 +54,7 @@ export function POrientTable<TData, TValue>({
   );
   const [pagination, setPagination] = React.useState<PaginationState>({
     pageIndex: 0,
-    pageSize: 5,
+    pageSize: 4,
   });
 
   const table = useReactTable({

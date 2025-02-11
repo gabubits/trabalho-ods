@@ -22,10 +22,7 @@ const DashboardOrientando = async () => {
       where: {
         id: projID.projeto_id,
       },
-      select: {
-        id: true,
-        nome: true,
-        tipo: true,
+      include: {
         Orientador: {
           select: {
             UsuarioComum: {
@@ -40,10 +37,9 @@ const DashboardOrientando = async () => {
 
     for (const p of proj) {
       projetos.push({
-        id: p.id,
-        nome_proj: p.nome,
-        tipo_proj: p.tipo,
+        ...p,
         orientador_nome: p.Orientador.UsuarioComum.nome,
+        session_tipo: session.usuario_tipo,
       });
     }
   }
@@ -55,7 +51,7 @@ const DashboardOrientando = async () => {
           Gerenciamento de projetos
         </h1>
         <div className="flex justify-center items-center mt-4 gap-4"></div>
-        <div className=" h-[500px] w-[1000px] rounded-md bg-white overflow-x-auto p-5">
+        <div className=" max-h-fit max-w-fit rounded-md bg-white overflow-x-auto p-5">
           <TabelaProjetosDash columns={columns} data={projetos} />
         </div>
       </div>
